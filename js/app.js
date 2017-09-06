@@ -2,6 +2,8 @@
  * Create a list that holds all of your cards
  */
 
+const cards = Array.prototype.slice.call(document.getElementsByClassName("card"));
+
 
 /*
  * Display the cards on the page
@@ -24,6 +26,21 @@ function shuffle(array) {
 
     return array;
 }
+
+//shuffle the cards
+let shuffledCards = shuffle(cards);
+
+//create the html
+let shuffledCardsHTML = shuffledCards.reduce(function(acc,val){
+	acc += `<li class="${val.className}"><i class="${val.children[0].className}"></i></li>`;
+	return acc;
+},"");
+
+console.log(shuffledCardsHTML);
+
+//clear cards board
+document.getElementsByClassName("deck")[0].innerHTML = shuffledCardsHTML;
+
 
 
 /*
