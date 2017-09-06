@@ -4,7 +4,17 @@
 
 let cards = Array.prototype.slice.call(document.getElementsByClassName("card"));
 
+let Card = function(item) {
 
+};
+
+Card.prototype.toggle = function() {
+
+};
+
+Card.prototype.checkMatch = function() {
+
+};
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
