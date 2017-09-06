@@ -63,3 +63,8 @@ document.getElementsByClassName("restart")[0].addEventListener("click",function(
 	e.preventDefault();
 	shuffleDeck();
 });
+
+document.getElementByClassName("card").addEventListener("click",function(e){
+	e.preventDefault();
+	console.log(this);
+})
