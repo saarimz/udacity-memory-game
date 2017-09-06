@@ -58,3 +58,8 @@ function shuffleDeck() {
 TO DOs : create click event listener logic
 */
 
+//restart button
+document.getElementsByClassName("restart")[0].addEventListener("click",function(e){
+	e.preventDefault();
+	shuffleDeck();
+});
