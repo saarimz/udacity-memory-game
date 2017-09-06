@@ -2,8 +2,10 @@
  * Create a list that holds all of your cards
  */
 
+//cards array
 let cards = Array.prototype.slice.call(document.getElementsByClassName("card"));
 
+//card object
 let Card = function(item) {
 
 };
