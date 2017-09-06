@@ -2,7 +2,7 @@
  * Create a list that holds all of your cards
  */
 
-const cards = Array.prototype.slice.call(document.getElementsByClassName("card"));
+let cards = Array.prototype.slice.call(document.getElementsByClassName("card"));
 
 
 /*
@@ -14,6 +14,7 @@ const cards = Array.prototype.slice.call(document.getElementsByClassName("card")
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
+
     var currentIndex = array.length, temporaryValue, randomIndex;
 
     while (currentIndex !== 0) {
@@ -27,17 +28,19 @@ function shuffle(array) {
     return array;
 }
 
-//shuffle the cards
-let shuffledCards = shuffle(cards);
-
-//create the html
-let shuffledCardsHTML = shuffledCards.reduce(function(acc,val){
-	acc += `<li class="${val.className}"><i class="${val.children[0].className}"></i></li>`;
-	return acc;
-},"");
-
-//clear cards board
-document.getElementsByClassName("deck")[0].innerHTML = shuffledCardsHTML;
+function shuffleDeck() {
+	//convert arraynode to array
+	let cards = Array.prototype.slice.call(document.getElementsByClassName("card"));
+	//shuffle the cards
+	let shuffledCards = shuffle(cards);
+	//generated the html
+	let shuffledCardsHTML = shuffledCards.reduce(function(acc,val){
+		acc += `<li class="${val.className}"><i class="${val.children[0].className}"></i></li>`;
+		return acc;
+	},"");
+	//added the html
+	document.getElementsByClassName("deck")[0].innerHTML = shuffledCardsHTML;
+}
 
 
 
