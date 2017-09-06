@@ -64,7 +64,7 @@ document.getElementsByClassName("restart")[0].addEventListener("click",function(
 	shuffleDeck();
 });
 
-document.getElementByClassName("card").addEventListener("click",function(e){
+document.getElementsByClassName("deck")[0].addEventListener("click",function(e){
 	e.preventDefault();
-	console.log(this);
+	console.log(e.target);
 })
