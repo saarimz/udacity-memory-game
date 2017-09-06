@@ -36,8 +36,6 @@ let shuffledCardsHTML = shuffledCards.reduce(function(acc,val){
 	return acc;
 },"");
 
-console.log(shuffledCardsHTML);
-
 //clear cards board
 document.getElementsByClassName("deck")[0].innerHTML = shuffledCardsHTML;
 
