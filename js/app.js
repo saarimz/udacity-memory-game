@@ -1,6 +1,4 @@
-/*
- * Create a list that holds all of your cards
- */
+//initial setup
 let data = [
 	
 	{icon: "fa fa-diamond", class: "card"},
@@ -20,71 +18,27 @@ let data = [
 	{icon: "fa fa-paper-plane-o", class: "card"},
 	{icon: "fa fa-cube", class: "card"}
 
-]
-//card 1 and card 14 should match 
+];
 
-//card object definition
-let Card = function(item) {
+let moves = 0;
+let usedCards = [];
+let gameOver = false;
 
-  //this.html = `<li class="${this.visible}"><i class="${this.symbol}"></i></li>`;
+//create all utility functions
+function shuffle(array) {
 
-  //create element to bind
-  this.element = document.createElement("li");
-  this.element.setAttribute("class", item.class);
+    var currentIndex = array.length, temporaryValue, randomIndex;
 
-  //create <i> child element
-  this.innerElement = document.createElement("i");
-  this.innerElement.setAttribute("class", item.icon);
-  this.element.appendChild(this.innerElement);
-
-  //add it to the dom
-  document.getElementsByClassName("deck")[0].appendChild(this.element);
-  //add event listener
-  this.element.addEventListener("click", this, false);
-
-};
-
-
-
-Card.prototype.handleEvent = function(e) {
-    switch (e.type) {
-        case "click": this.click(e);
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
     }
+
+    return array;
 }
-
-Card.prototype.click = function(e) {
-    // do something with this.element...
-   let lastElement = window.lastElementClicked;
-   let currentElement = e.target;
-   console.log(lastElement);
-   if (!this.checkMatch(lastElement)) {
-   		console.log("not a match");
-   }
-   this.toggle();
-   
-} 
-
-Card.prototype.toggle = function() {
-	if (!this.element.className.match(/\sopen show/)) {
-		this.element.className += " open show";
-	} 
-	else {
-		this.element.className = this.element.className.replace(" open show","");
-	}
-}
-
-
-Card.prototype.checkMatch = function(comparisonObj) {
-	if (comparisonObj.innerElement == "undefined") {
-		return false;
-	} else if (this.innerElement.className === comparisonObj.innerElement.className) {
-		this.element.className += " match";
-		comparisonObj.element.className += " match";
-		return true;
-	} else {
-		return false;
-	}
-} 
 
 function hasClass(el, className) {
   if (el.classList)
@@ -108,6 +62,102 @@ function removeClass(el, className) {
   }
 }
 
+//card object definition
+let Card = function(item) {
+
+  //create element to bind
+  this.element = document.createElement("li");
+  this.element.setAttribute("class", item.class);
+
+  //create <i> child element
+  this.innerElement = document.createElement("i");
+  this.innerElement.setAttribute("class", item.icon);
+  this.element.appendChild(this.innerElement);
+  //add it to the dom
+  document.getElementsByClassName("deck")[0].appendChild(this.element);
+  //add event listener
+  this.element.addEventListener("click", this, false);
+
+};
+
+
+Card.prototype.handleEvent = function(e) {
+    switch (e.type) {
+        case "click": this.click(e);
+    }
+};
+
+Card.prototype.click = function(e) {
+	//prevent default page refresh behavior
+	e.preventDefault();
+
+	//TO DO: set timer
+
+	//set default for last element clicked for first ever click
+	window.lastElementClicked = window.lastElementClicked || "none";
+	
+    // do something with this.element...
+   	if (!this.element.classList.contains("match")) {
+
+   		if (hasClass(this.element,"open") && hasClass(this.element,"show")) {
+   			removeClass(this.element, "open");
+			removeClass(this.element, "show");
+			window.lastElementClicked = "none";
+			moves++;
+
+   		}
+   		else {
+   			addClass(this.element, "open");
+   			addClass(this.element, "show");
+   			//check the symbols of the two cards only if a previous card has been clicked
+			if (window.lastElementClicked !== "none") {
+				//check if it's a match
+				if (window.lastElementClicked.childNodes[0].className === this.innerElement.className) {
+					addClass(window.lastElementClicked, "match");
+					addClass(this.element, "match");
+					usedCards.push(window.lastElementClicked,this.element);
+					window.lastElementClicked = "none";
+					moves++;
+				}
+				//since it's not a match we're going to flip these back over after 1 second so player can see card
+				else {
+					let that = this;
+					let lastElement = window.lastElementClicked;
+					setTimeout(function(){
+						removeClass(that.element, "open");
+						removeClass(that.element, "show");
+						removeClass(lastElement, "open");
+						removeClass(lastElement, "show");
+						window.lastElementClicked = "none";
+					},1000);
+					moves++;
+				}
+			}
+			else {
+				//set the last element clicked to the current element for next click
+   				window.lastElementClicked = event.target; 
+			}
+   		}
+
+   		//updates the moves view (could rewrite in vanilla js)
+		(moves === 1) ? $(".moves").html(`${moves} Move`) : $(".moves").html(`${moves} Moves`);
+
+		//game winning condition check
+		if (usedCards.length === data.length) {
+			swal("You won!");
+			window.lastElementClicked = "none";
+			gameOver = true;
+			//stop the timer here too
+		}
+   }
+   //show alert if card has already been matched 
+   else {
+     swal("You've already matched this card!");
+   }
+};
+
+   /*
+
 
 /*
  * Display the cards on the page
@@ -124,20 +174,6 @@ let cards = Array.prototype.slice.call(document.getElementsByClassName("card")).
 console.log(cards); */
 
 // Shuffle function from http://stackoverflow.com/a/2450976
-function shuffle(array) {
-
-    var currentIndex = array.length, temporaryValue, randomIndex;
-
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-}
 
 
 /*
@@ -154,22 +190,15 @@ function shuffle(array) {
 TO DOs : create click event listener logic
 */
 
-//restart button
-/*
-document.getElementsByClassName("restart")[0].addEventListener("click",function(e){
-	e.preventDefault();
-	shuffleDeck();
-});
 
-document.getElementsByClassName("deck")[0].addEventListener("click",function(e){
-	e.preventDefault();
-	console.log(e.target);
-	e.target.addClass(" open show");
-}) */
 
 //jquery
 
 $(document).ready(function(){
+	
+	$(".deck").empty();
+
+	data = shuffle(data);
 
 	data.forEach(function(obj){
 		new Card(obj);
@@ -178,15 +207,6 @@ $(document).ready(function(){
 	//when restart is clicked
 	$(".restart").click(function(e){
 		e.preventDefault();
-		
-		
-	});
-
-
-	$(".card").click(function(e){
-		e.preventDefault();
-		window.lastElementClicked = event.target;
-		//console.log(this)
 	});
 
 
