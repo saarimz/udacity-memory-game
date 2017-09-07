@@ -2,25 +2,49 @@
  * Create a list that holds all of your cards
  */
 
+//card 1 and card 14 should match 
 
 //card object definition
 let Card = function(item) {
-  this.visible = item.className;
-  this.symbol =item.children[0].className;
-  this.html = `<li class="${this.visible}"><i class="${this.symbol}"></i></li>`;
+
+  //this.html = `<li class="${this.visible}"><i class="${this.symbol}"></i></li>`;
+
+  //create element to bind
+  this.element = document.createElement("li");
+  this.element.setAttribute("class", item.className);
+
+  //create <i> child element
+  this.innerElement = document.createElement("i");
+  this.innerElement.setAttribute("class", item.children[0].className);
+  this.element.appendChild(this.innerElement);
+
+  //add it to the dom
+  document.getElementsByClassName("deck")[0].appendChild(element);
 };
 
-Card.prototype.toggle = function() {
-	if (!this.visible.match(/\sopen show/)) {
-		this.visible += " open show";
-	} else {
-		this.visible = this.visible.replace(" open show","");
+Card.prototype.handleEvent = function(e) {
+    switch (e.type) {
+        case "click": this.click(e);
+    }
+}
+
+Card.prototype.click = function(e) {
+    // do something with this.element...
+    if (!this.element.className.match(/\sopen show/)) {
+		this.element.className += " open show";
+	} 
+	else {
+		this.element.className = this.element.className.replace(" open show","");
 	}
-};
+
+	alert("clicked");
+}
+
 
 Card.prototype.checkMatch = function(comparisonObj) {
-	if (this.symbol === comparisonObj.symbol) {
-		this.visible += " match";
+	if (this.element.children[0].className === comparisonObj.element.children[0].className) {
+		this.element.className += " match";
+		comparisonObj.element.className += " match";
 		return true;
 	} else {
 		return false;
@@ -37,7 +61,7 @@ Card.prototype.checkMatch = function(comparisonObj) {
 
 //create array of card objects
 let cards = Array.prototype.slice.call(document.getElementsByClassName("card")).map(function(val){
-	return new Card(val);
+	new Card(val);
 });
 
 // Shuffle function from http://stackoverflow.com/a/2450976
@@ -107,5 +131,11 @@ $(document).ready(function(){
 	$(".restart").click(function(e){
 		e.preventDefault();
 		shuffleDeck();
+	});
+
+	$(".deck").html("");
+
+	$(".card").each(function(obj){
+		new Card(obj);
 	});
 });
