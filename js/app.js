@@ -52,16 +52,16 @@ Card.prototype.handleEvent = function(e) {
     }
 }
 
-Card.prototype.click = function() {
+Card.prototype.click = function(e) {
     // do something with this.element...
-    if (!this.element.className.match(/\sopen show/)) {
-		this.element.className += " open show";
-	} 
-	
-	else {
-		this.element.className = this.element.className.replace(" open show","");
-	}
-
+   let lastElement = window.lastElementClicked;
+   let currentElement = e.target;
+   console.log(lastElement);
+   if (!this.checkMatch(lastElement)) {
+   		console.log("not a match");
+   }
+   this.toggle();
+   
 } 
 
 Card.prototype.toggle = function() {
@@ -75,7 +75,9 @@ Card.prototype.toggle = function() {
 
 
 Card.prototype.checkMatch = function(comparisonObj) {
-	if (this.element.children[0].className === comparisonObj.element.children[0].className) {
+	if (comparisonObj.innerElement == "undefined") {
+		return false;
+	} else if (this.innerElement.className === comparisonObj.innerElement.className) {
 		this.element.className += " match";
 		comparisonObj.element.className += " match";
 		return true;
@@ -185,7 +187,6 @@ $(document).ready(function(){
 		e.preventDefault();
 		window.lastElementClicked = event.target;
 		//console.log(this)
-		console.log(e.target);
 	});
 
 
