@@ -60,7 +60,8 @@ function shuffleDeck() {
 	//shuffle the cards
 	let shuffledCards = shuffle(cards);
 	//render the deck
-	render(shuffledCards);
+	cards = shuffledCards;
+	render(cards);
 }
 
 function render(deck) {
@@ -87,6 +88,7 @@ TO DOs : create click event listener logic
 */
 
 //restart button
+/*
 document.getElementsByClassName("restart")[0].addEventListener("click",function(e){
 	e.preventDefault();
 	shuffleDeck();
@@ -96,5 +98,14 @@ document.getElementsByClassName("deck")[0].addEventListener("click",function(e){
 	e.preventDefault();
 	console.log(e.target);
 	e.target.addClass(" open show");
-	
-})
+}) */
+
+//jquery
+
+$(document).ready(function(){
+	//when restart is clicked
+	$(".restart").click(function(e){
+		e.preventDefault();
+		shuffleDeck();
+	});
+});
