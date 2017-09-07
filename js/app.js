@@ -21,6 +21,9 @@ Card.prototype.toggle = function() {
 Card.prototype.checkMatch = function(comparisonObj) {
 	if (this.symbol === comparisonObj.symbol) {
 		this.visible += " match";
+		return true;
+	} else {
+		return false;
 	}
 }
 
@@ -90,5 +93,7 @@ document.getElementsByClassName("restart")[0].addEventListener("click",function(
 
 document.getElementsByClassName("deck")[0].addEventListener("click",function(e){
 	e.preventDefault();
-	console.log(e.target)
+	console.log(e.target);
+	e.target.addClass(" open show");
+	
 })
