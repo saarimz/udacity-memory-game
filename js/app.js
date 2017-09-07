@@ -19,7 +19,7 @@ let Card = function(item) {
   this.element.appendChild(this.innerElement);
 
   //add it to the dom
-  document.getElementsByClassName("deck")[0].appendChild(element);
+  document.getElementsByClassName("deck")[0].appendChild(this.element);
 };
 
 Card.prototype.handleEvent = function(e) {
@@ -51,6 +51,28 @@ Card.prototype.checkMatch = function(comparisonObj) {
 	}
 }
 
+function hasClass(el, className) {
+  if (el.classList)
+    return el.classList.contains(className)
+  else
+    return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'))
+}
+
+function addClass(el, className) {
+  if (el.classList)
+    el.classList.add(className)
+  else if (!hasClass(el, className)) el.className += " " + className
+}
+
+function removeClass(el, className) {
+  if (el.classList)
+    el.classList.remove(className)
+  else if (hasClass(el, className)) {
+    var reg = new RegExp('(\\s|^)' + className + '(\\s|$)')
+    el.className=el.className.replace(reg, ' ')
+  }
+}
+
 
 /*
  * Display the cards on the page
@@ -61,8 +83,9 @@ Card.prototype.checkMatch = function(comparisonObj) {
 
 //create array of card objects
 let cards = Array.prototype.slice.call(document.getElementsByClassName("card")).map(function(val){
-	new Card(val);
+	return new Card(val);
 });
+console.log(cards);
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -78,22 +101,6 @@ function shuffle(array) {
     }
 
     return array;
-}
-
-function shuffleDeck() {
-	//shuffle the cards
-	let shuffledCards = shuffle(cards);
-	//render the deck
-	cards = shuffledCards;
-	render(cards);
-}
-
-function render(deck) {
-	//create the html out of the deck and update it
-	document.getElementsByClassName("deck")[0].innerHTML = deck.reduce(function(acc,val){
-		acc += val.html;
-		return acc;
-	},"");
 }
 
 
@@ -130,12 +137,8 @@ $(document).ready(function(){
 	//when restart is clicked
 	$(".restart").click(function(e){
 		e.preventDefault();
-		shuffleDeck();
+		
 	});
 
-	$(".deck").html("");
 
-	$(".card").each(function(obj){
-		new Card(obj);
-	});
 });
