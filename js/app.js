@@ -2,27 +2,40 @@
  * Create a list that holds all of your cards
  */
 
-//cards array
-let cards = Array.prototype.slice.call(document.getElementsByClassName("card"));
 
-//card object
+//card object definition
 let Card = function(item) {
-
+  this.visible = item.className;
+  this.symbol =item.children[0].className;
+  this.html = `<li class="${this.visible}"><i class="${this.symbol}"></i></li>`;
 };
 
 Card.prototype.toggle = function() {
-
+	if (!this.visible.match(/\sopen show/)) {
+		this.visible += " open show";
+	} else {
+		this.visible = this.visible.replace(" open show","");
+	}
 };
 
-Card.prototype.checkMatch = function() {
+Card.prototype.checkMatch = function(comparisonObj) {
+	if (this.symbol === comparisonObj.symbol) {
+		this.visible += " match";
+	}
+}
 
-};
+
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
  *   - loop through each card and create its HTML
  *   - add each card's HTML to the page
  */
+
+//create array of card objects
+let cards = Array.prototype.slice.call(document.getElementsByClassName("card")).map(function(val){
+	return new Card(val);
+});
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -41,13 +54,12 @@ function shuffle(array) {
 }
 
 function shuffleDeck() {
-	//convert arraynode to array
-	let cards = Array.prototype.slice.call(document.getElementsByClassName("card"));
+
 	//shuffle the cards
 	let shuffledCards = shuffle(cards);
 	//generated the html
 	let shuffledCardsHTML = shuffledCards.reduce(function(acc,val){
-		acc += `<li class="${val.className}"><i class="${val.children[0].className}"></i></li>`;
+		acc += val.html;
 		return acc;
 	},"");
 	//added the html
@@ -78,5 +90,5 @@ document.getElementsByClassName("restart")[0].addEventListener("click",function(
 
 document.getElementsByClassName("deck")[0].addEventListener("click",function(e){
 	e.preventDefault();
-	console.log(e.target);
+	console.log(e.target)
 })
