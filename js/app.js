@@ -1,7 +1,26 @@
 /*
  * Create a list that holds all of your cards
  */
+let data = [
+	
+	{icon: "fa fa-diamond", class: "card"},
+	{icon: "fa fa-paper-plane-o", class: "card"},
+	{icon: "fa fa-anchor", class: "card"},
+	{icon: "fa fa-cube", class: "card"},
+	{icon: "fa fa-bolt", class: "card"},
+	{icon: "fa fa-anchor", class: "card"},
+	{icon: "fa fa-leaf", class: "card"},
+	{icon: "fa fa-bicycle", class: "card"},
+	{icon: "fa fa-diamond", class: "card"},
+	{icon: "fa fa-bomb", class: "card"},
+	{icon: "fa fa-leaf", class: "card"},
+	{icon: "fa fa-bomb", class: "card"},
+	{icon: "fa fa-bolt", class: "card"},
+	{icon: "fa fa-bicycle", class: "card"},
+	{icon: "fa fa-paper-plane-o", class: "card"},
+	{icon: "fa fa-cube", class: "card"}
 
+]
 //card 1 and card 14 should match 
 
 //card object definition
@@ -11,16 +30,21 @@ let Card = function(item) {
 
   //create element to bind
   this.element = document.createElement("li");
-  this.element.setAttribute("class", item.className);
+  this.element.setAttribute("class", item.class);
 
   //create <i> child element
   this.innerElement = document.createElement("i");
-  this.innerElement.setAttribute("class", item.children[0].className);
+  this.innerElement.setAttribute("class", item.icon);
   this.element.appendChild(this.innerElement);
 
   //add it to the dom
   document.getElementsByClassName("deck")[0].appendChild(this.element);
+  //add event listener
+  this.element.addEventListener("click", this, false);
+
 };
+
+
 
 Card.prototype.handleEvent = function(e) {
     switch (e.type) {
@@ -28,16 +52,25 @@ Card.prototype.handleEvent = function(e) {
     }
 }
 
-Card.prototype.click = function(e) {
+Card.prototype.click = function() {
     // do something with this.element...
     if (!this.element.className.match(/\sopen show/)) {
+		this.element.className += " open show";
+	} 
+	
+	else {
+		this.element.className = this.element.className.replace(" open show","");
+	}
+
+} 
+
+Card.prototype.toggle = function() {
+	if (!this.element.className.match(/\sopen show/)) {
 		this.element.className += " open show";
 	} 
 	else {
 		this.element.className = this.element.className.replace(" open show","");
 	}
-
-	alert("clicked");
 }
 
 
@@ -49,7 +82,7 @@ Card.prototype.checkMatch = function(comparisonObj) {
 	} else {
 		return false;
 	}
-}
+} 
 
 function hasClass(el, className) {
   if (el.classList)
@@ -81,11 +114,12 @@ function removeClass(el, className) {
  *   - add each card's HTML to the page
  */
 
+/*
 //create array of card objects
 let cards = Array.prototype.slice.call(document.getElementsByClassName("card")).map(function(val){
 	return new Card(val);
 });
-console.log(cards);
+console.log(cards); */
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -134,10 +168,24 @@ document.getElementsByClassName("deck")[0].addEventListener("click",function(e){
 //jquery
 
 $(document).ready(function(){
+
+	data.forEach(function(obj){
+		new Card(obj);
+	});
+
 	//when restart is clicked
 	$(".restart").click(function(e){
 		e.preventDefault();
 		
+		
+	});
+
+
+	$(".card").click(function(e){
+		e.preventDefault();
+		window.lastElementClicked = event.target;
+		//console.log(this)
+		console.log(e.target);
 	});
 
 
