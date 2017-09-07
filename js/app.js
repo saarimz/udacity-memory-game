@@ -57,18 +57,19 @@ function shuffle(array) {
 }
 
 function shuffleDeck() {
-
 	//shuffle the cards
 	let shuffledCards = shuffle(cards);
-	//generated the html
-	let shuffledCardsHTML = shuffledCards.reduce(function(acc,val){
+	//render the deck
+	render(shuffledCards);
+}
+
+function render(deck) {
+	//create the html out of the deck and update it
+	document.getElementsByClassName("deck")[0].innerHTML = deck.reduce(function(acc,val){
 		acc += val.html;
 		return acc;
 	},"");
-	//added the html
-	document.getElementsByClassName("deck")[0].innerHTML = shuffledCardsHTML;
 }
-
 
 
 /*
