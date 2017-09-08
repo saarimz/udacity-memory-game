@@ -24,6 +24,7 @@ let moves = 0;
 let usedCards = [];
 
 //create all utility functions
+// Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
 
     var currentIndex = array.length, temporaryValue, randomIndex;
@@ -286,23 +287,6 @@ Card.prototype.click = function(e) {
 
 
 /*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
-
-/*
-//create array of card objects
-let cards = Array.prototype.slice.call(document.getElementsByClassName("card")).map(function(val){
-	return new Card(val);
-});
-console.log(cards); */
-
-// Shuffle function from http://stackoverflow.com/a/2450976
-
-
-/*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
  *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
@@ -313,7 +297,6 @@ console.log(cards); */
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 /*
-TO DOs : create click event listener logic
 */
 
 
