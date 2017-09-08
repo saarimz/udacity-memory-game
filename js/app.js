@@ -22,8 +22,6 @@ let data = [
 
 let moves = 0;
 let usedCards = [];
-let gameOver = false;
-let timerId;
 
 //create all utility functions
 function shuffle(array) {
@@ -41,6 +39,7 @@ function shuffle(array) {
     return array;
 }
 
+//these functions are from stack overflow (https://stackoverflow.com/questions/195951/change-an-elements-class-with-javascript)
 function hasClass(el, className) {
   if (el.classList)
     return el.classList.contains(className)
@@ -63,30 +62,97 @@ function removeClass(el, className) {
   }
 }
 
-function timerToggle() {
-	let start = Date.now();
-	//setting it to a variable so that i can access that var to stop the timer
-	var intervalID = setInterval(function(){
-		let currentTime = Date.now();
-		let distance = currentTime - start;
+//timer object
 
-		// Time calculations for days, hours, minutes and seconds
-		let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-		let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-		let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-		let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-		
-	    //format hh:mm:ss
-	    if (hours   < 10) {hours   = "0"+hours;}
-	    if (minutes < 10) {minutes = "0"+minutes;}
-	    if (seconds < 10) {seconds = "0"+seconds;}
+let Timer = function() {
+	this.currentTime = Date.now();
+	this.startTime = this.currentTime;
+	this.distance = this.startTime - this.currentTime;
+	this.running = false;
+	
+	this.displayTime();
 
-		//pure javascript implementation of render
-		document.getElementsByClassName("timer")[0].innerHTML = `${hours}:${minutes}:${seconds}`
-	},1000);
+};
 
-	return intervalID;
+//timer methods:
+
+//start the timer
+Timer.prototype.start = function() {
+	//prevent multiple setInterval
+	if (this.running) return;
+
+	this.running = true;
+	this.startTime = Date.now();
+
+	this.intervalID = setInterval(
+
+		(function(self){
+		return function(){
+			self.displayTime();
+		}
+	})(this),1000);
+};
+
+//stop the timer
+Timer.prototype.stop = function() {
+
+	clearInterval(this.intervalID);
+	this.running = false;
+	this.displayTime();
+};
+
+//reset the timer
+Timer.prototype.reset = function() {
+	this.stop();
+	this.startTime = Date.now();
+	this.displayTime();
 }
+
+//render the timer to the screen
+Timer.prototype.displayTime = function() {
+	this.currentTime = Date.now();
+	this.distance = this.currentTime - this.startTime;
+
+	let days = Math.floor(this.distance / (1000 * 60 * 60 * 24));
+	let hours = Math.floor((this.distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+	let minutes = Math.floor((this.distance % (1000 * 60 * 60)) / (1000 * 60));
+	let seconds = Math.floor((this.distance % (1000 * 60)) / 1000);
+
+	//format hh:mm:ss
+	if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+
+    document.getElementsByClassName("timer")[0].innerHTML = `${hours}:${minutes}:${seconds}`;
+};
+
+let time = new Timer();
+
+//moves panel object
+
+let Move = function() {
+	this.moves = 0;
+	this.singular = "Move";
+	this.plural = "Moves";
+
+	this.display();
+}
+
+Move.prototype.display = function() {
+	document.getElementsByClassName("moves")[0].innerHTML = (this.moves === 1) ? (this.moves + " " + this.singular) : (this.moves + " " + this.plural);
+}
+
+Move.prototype.update = function() {
+	this.moves++;
+	this.display();
+}
+
+Move.prototype.reset = function() {
+	this.moves = 0;
+	this.display();
+}
+
+let move = new Move();
 
 //card object definition
 let Card = function(item) {
@@ -117,10 +183,12 @@ Card.prototype.click = function(e) {
 	//prevent default page refresh behavior
 	e.preventDefault();
 
+	time.start();
 	//TO DO: set timer
+	/*
 	if (typeof window.lastElementClicked === "undefined") {
-		timerId = timerToggle();
-	}
+		time.start();
+	}*/
 
 	//set default for last element clicked for first ever click
 	window.lastElementClicked = window.lastElementClicked || "none";
@@ -132,7 +200,7 @@ Card.prototype.click = function(e) {
    			removeClass(this.element, "open");
 			removeClass(this.element, "show");
 			window.lastElementClicked = "none";
-			moves++;
+			move.update();
 
    		}
    		else {
@@ -146,7 +214,7 @@ Card.prototype.click = function(e) {
 					addClass(this.element, "match");
 					usedCards.push(window.lastElementClicked,this.element);
 					window.lastElementClicked = "none";
-					moves++;
+					move.update();
 				}
 				//since it's not a match we're going to flip these back over after 1 second so player can see card
 				else {
@@ -159,7 +227,7 @@ Card.prototype.click = function(e) {
 						removeClass(lastElement, "show");
 						window.lastElementClicked = "none";
 					},1000);
-					moves++;
+					move.update();
 				}
 			}
 			else {
@@ -168,22 +236,22 @@ Card.prototype.click = function(e) {
 			}
    		}
 
-   		//updates the moves view (could rewrite in vanilla js)
-		(moves === 1) ? $(".moves").html(`${moves} Move`) : $(".moves").html(`${moves} Moves`);
-
 		//game winning condition check
 		if (usedCards.length === data.length) {
-			clearInterval(timerId);
+			//stop the timer
+			time.stop();
+			//win message
 			swal("You won!");
+			//reset to defaults
 			window.lastElementClicked = "none";
 			gameOver = true;
-			//stop the timer here too
 		}
    }
    //show alert if card has already been matched 
    else {
      swal("You've already matched this card!");
    }
+
 };
 
    /*
@@ -225,22 +293,22 @@ TO DOs : create click event listener logic
 //jquery
 
 $(document).ready(function(){
-	
+
 	function newGame() {
+		usedCards = [];
 		$(".deck").empty();
-		$(".timer").text("00:00:00");
-		moves = 0;
 		data = shuffle(data);
 		data.forEach(function(obj){
 			new Card(obj);
 		});
-		//document.getElementsByClassName("timer")[0].innerHTML = "00:00:00";
-		
 	}
 
 	//when restart is clicked
 	$(".restart").click(function(e){
 		e.preventDefault();
+		time.reset();
+		move.reset();
+		newGame();
 	
 	});
 
