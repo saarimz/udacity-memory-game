@@ -23,6 +23,7 @@ let data = [
 let moves = 0;
 let usedCards = [];
 let gameOver = false;
+let timerId;
 
 //create all utility functions
 function shuffle(array) {
@@ -62,6 +63,31 @@ function removeClass(el, className) {
   }
 }
 
+function timerToggle() {
+	let start = Date.now();
+	//setting it to a variable so that i can access that var to stop the timer
+	var intervalID = setInterval(function(){
+		let currentTime = Date.now();
+		let distance = currentTime - start;
+
+		// Time calculations for days, hours, minutes and seconds
+		let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+		let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+		let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+		let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+		
+	    //format hh:mm:ss
+	    if (hours   < 10) {hours   = "0"+hours;}
+	    if (minutes < 10) {minutes = "0"+minutes;}
+	    if (seconds < 10) {seconds = "0"+seconds;}
+
+		//pure javascript implementation of render
+		document.getElementsByClassName("timer")[0].innerHTML = `${hours}:${minutes}:${seconds}`
+	},1000);
+
+	return intervalID;
+}
+
 //card object definition
 let Card = function(item) {
 
@@ -92,6 +118,9 @@ Card.prototype.click = function(e) {
 	e.preventDefault();
 
 	//TO DO: set timer
+	if (typeof window.lastElementClicked === "undefined") {
+		timerId = timerToggle();
+	}
 
 	//set default for last element clicked for first ever click
 	window.lastElementClicked = window.lastElementClicked || "none";
@@ -144,6 +173,7 @@ Card.prototype.click = function(e) {
 
 		//game winning condition check
 		if (usedCards.length === data.length) {
+			clearInterval(timerId);
 			swal("You won!");
 			window.lastElementClicked = "none";
 			gameOver = true;
@@ -196,18 +226,24 @@ TO DOs : create click event listener logic
 
 $(document).ready(function(){
 	
-	$(".deck").empty();
-
-	data = shuffle(data);
-
-	data.forEach(function(obj){
-		new Card(obj);
-	});
+	function newGame() {
+		$(".deck").empty();
+		$(".timer").text("00:00:00");
+		moves = 0;
+		data = shuffle(data);
+		data.forEach(function(obj){
+			new Card(obj);
+		});
+		//document.getElementsByClassName("timer")[0].innerHTML = "00:00:00";
+		
+	}
 
 	//when restart is clicked
 	$(".restart").click(function(e){
 		e.preventDefault();
+	
 	});
 
+	newGame();
 
 });
