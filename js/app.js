@@ -154,6 +154,34 @@ Move.prototype.reset = function() {
 
 let move = new Move();
 
+//stars object definition
+
+let Star = function(num) {
+	this.num = num;
+	this.display();
+
+};
+
+Star.prototype.display = function() {
+
+	for (let i = 0; i < this.num; i++) {
+		this.element = document.createElement("li");
+		this.element.setAttribute("class", "gold-star");
+		this.innerElement = document.createElement("i");
+		this.innerElement.setAttribute("class", "fa fa-star");
+	    this.element.appendChild(this.innerElement);
+	    document.getElementsByClassName("stars")[0].appendChild(this.element);
+	} 
+};
+
+Star.prototype.removeStar = function() {
+	//FIX THIS
+	removeClass(this.element,"gold-star");
+
+};
+
+let stars = new Star(3);
+
 //card object definition
 let Card = function(item) {
 

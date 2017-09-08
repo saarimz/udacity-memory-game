@@ -116,8 +116,13 @@ h1 {
 .score-panel .stars li {
     list-style: none;
     display: inline-block;
+    text-align: center;
+    padding: 0px 2px;
 }
 
+.gold-star {
+    color: gold;
+}
 .score-panel .restart {
     cursor: pointer;
 }
