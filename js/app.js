@@ -114,17 +114,18 @@ Timer.prototype.displayTime = function() {
 	this.currentTime = Date.now();
 	this.distance = this.currentTime - this.startTime;
 
-	let days = Math.floor(this.distance / (1000 * 60 * 60 * 24));
-	let hours = Math.floor((this.distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-	let minutes = Math.floor((this.distance % (1000 * 60 * 60)) / (1000 * 60));
-	let seconds = Math.floor((this.distance % (1000 * 60)) / 1000);
+	days = Math.floor(this.distance / (1000 * 60 * 60 * 24));
+	hours = Math.floor((this.distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+	minutes = Math.floor((this.distance % (1000 * 60 * 60)) / (1000 * 60));
+	seconds = Math.floor((this.distance % (1000 * 60)) / 1000);
 
 	//format hh:mm:ss
 	if (hours   < 10) {hours   = "0"+hours;}
     if (minutes < 10) {minutes = "0"+minutes;}
     if (seconds < 10) {seconds = "0"+seconds;}
 
-    document.getElementsByClassName("timer")[0].innerHTML = `${hours}:${minutes}:${seconds}`;
+    this.formattedTime = `${hours}:${minutes}:${seconds}`;
+    document.getElementsByClassName("timer")[0].innerHTML = this.formattedTime;
 };
 
 let time = new Timer();
@@ -135,7 +136,6 @@ let Move = function() {
 	this.moves = 0;
 	this.singular = "Move";
 	this.plural = "Moves";
-
 	this.display();
 }
 
@@ -177,8 +177,16 @@ Star.prototype.display = function() {
 
 Star.prototype.removeStar = function() {
 	//FIX THIS
-	removeClass(this.element,"gold-star");
+	let goldStars = document.getElementsByClassName("gold-star");
+	removeClass(goldStars[goldStars.length - 1],"gold-star");
 
+};
+
+Star.prototype.reset = function() {
+	this.num = 3;
+	for (let i = 0; i < this.num; i++) {
+		addClass(document.getElementsByClassName("stars")[0].getElementsByTagName("li")[i],"gold-star");
+	}
 };
 
 let stars = new Star(3);
@@ -255,7 +263,7 @@ Card.prototype.click = function(e) {
 						removeClass(lastElement, "open");
 						removeClass(lastElement, "show");
 						window.lastElementClicked = "none";
-					},1000);
+					},500);
 					move.update();
 				}
 			}
@@ -265,12 +273,35 @@ Card.prototype.click = function(e) {
 			}
    		}
 
+   		//stars system
+   		switch (stars.num) {
+   			case 3:
+   				if ((move.moves) >= 10 && (move.moves < 15)) {
+   					stars.removeStar();
+   					stars.num--;
+   				}
+   				break;
+   			case 2:
+   				if ((move.moves >= 15) && (move.moves < 25)) {
+   					stars.removeStar();
+   					stars.num--;
+   				}
+   				break;
+   			case 1:
+   				if (move.moves >= 25) {
+   					stars.removeStar();
+   					stars.num--;
+   				}
+   		}
+   
+
+
 		//game winning condition check
 		if (usedCards.length === data.length) {
 			//stop the timer
 			time.stop();
 			//win message
-			swal("You won!");
+			swal(`Congratulations, you won!. Your time is ${time.formattedTime}. You took ${move.moves} moves, and you got ${stars.num} stars.`);
 			//reset to defaults
 			window.lastElementClicked = "none";
 			gameOver = true;
@@ -319,6 +350,7 @@ $(document).ready(function(){
 		e.preventDefault();
 		time.reset();
 		move.reset();
+		stars.reset();
 		newGame();
 	
 	});
