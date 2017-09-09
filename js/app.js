@@ -159,6 +159,8 @@ let move = new Move();
 
 let Star = function(num) {
 	this.num = num;
+	this.singular = "Star";
+	this.plural = "Stars";
 	this.display();
 
 };
@@ -301,7 +303,17 @@ Card.prototype.click = function(e) {
 			//stop the timer
 			time.stop();
 			//win message
-			swal(`Congratulations, you won!. Your time is ${time.formattedTime}. You took ${move.moves} moves, and you got ${stars.num} stars.`);
+			swal({
+				title: `Congratulations, you won!`,
+				text: `Your time is ${time.formattedTime}. You took ${move.moves} moves, and you got ${stars.num} ${(stars.num === 1) ? stars.singular : stars.plural}.`,
+				type: 'success',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Play again?'
+				}).then(function () {
+					document.getElementsByClassName("restart")[0].click();
+				});
 			//reset to defaults
 			window.lastElementClicked = "none";
 			gameOver = true;
@@ -309,7 +321,21 @@ Card.prototype.click = function(e) {
    }
    //show alert if card has already been matched 
    else {
-     swal("You've already matched this card!");
+     swal({
+     	title: "You've already matched this card!",
+     	text: "Pick another card.",
+     	type: 'warning',
+     	showCancelButton: false,
+		showConfirmButton: false,
+     	timer: 1250
+     }).then(
+     	function(){},
+     	function(dismiss) {
+     		if (dismiss == "timer") {
+     			console.log("close the timer");
+     		}
+     	}
+     );
    }
 
 };
@@ -319,8 +345,10 @@ Card.prototype.click = function(e) {
 $(document).ready(function(){
 
 	function newGame() {
+		time.reset();
+		move.reset();
+		stars.reset();
 		usedCards = [];
-		$(".deck").empty();
 		data = shuffle(data);
 		data.forEach(function(obj){
 			new Card(obj);
@@ -330,9 +358,7 @@ $(document).ready(function(){
 	//when restart is clicked
 	$(".restart").click(function(e){
 		e.preventDefault();
-		time.reset();
-		move.reset();
-		stars.reset();
+		$(".deck").empty();
 		newGame();
 	
 	});
