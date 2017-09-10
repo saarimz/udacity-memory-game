@@ -178,7 +178,6 @@ Star.prototype.display = function() {
 };
 
 Star.prototype.removeStar = function() {
-	//FIX THIS
 	let goldStars = document.getElementsByClassName("gold-star");
 	removeClass(goldStars[goldStars.length - 1],"gold-star");
 
@@ -211,7 +210,7 @@ let Card = function(item) {
 
 };
 
-
+//link up the card prototype to the click
 Card.prototype.handleEvent = function(e) {
     switch (e.type) {
         case "click": this.click(e);
@@ -222,12 +221,8 @@ Card.prototype.click = function(e) {
 	//prevent default page refresh behavior
 	e.preventDefault();
 
+	//start the timer
 	time.start();
-	//TO DO: set timer
-	/*
-	if (typeof window.lastElementClicked === "undefined") {
-		time.start();
-	}*/
 
 	//set default for last element clicked for first ever click
 	window.lastElementClicked = window.lastElementClicked || "none";
