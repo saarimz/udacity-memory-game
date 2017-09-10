@@ -16,7 +16,7 @@ Clone the GitHub repository or download the project as a zip file. All the requi
 1. The project is not optimized for mobile. There will be overflow on mobile due to a lack of responsiveness.
 2. The `newGame()` function and the `restart` feature are written in JQuery. Switching to vanilla js would reduce the number of dependencies and size of the project, thereby improving performance.
 3. There could be additional CSS animations implemented to signify that cards do not match.
-4. There is a lot of repeated code to set `window.lastElementClicked`, and therefore the code isn't DRY.
+4. There is a lot of repeated code to set `window.lastElementClicked`, and therefore the code isn't DRY. Implementing the last element clicked in a different way would lead to less repeated code.
 
 ## Additional links:
 [Udacity project rubric](https://review.udacity.com/#!/rubrics/591/view)
