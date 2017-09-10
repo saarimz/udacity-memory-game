@@ -289,11 +289,6 @@ Card.prototype.click = function(e) {
    					stars.num--;
    				}
    				break;
-   			case 1:
-   				if (move.moves >= 25) {
-   					stars.removeStar();
-   					stars.num--;
-   				}
    		}
    
 
