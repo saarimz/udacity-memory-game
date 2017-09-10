@@ -239,7 +239,6 @@ Card.prototype.click = function(e) {
    			removeClass(this.element, "open");
 			removeClass(this.element, "show");
 			window.lastElementClicked = "none";
-			move.update();
 
    		}
    		else {
