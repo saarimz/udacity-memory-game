@@ -12,7 +12,7 @@ You can play the game by going [here](http://www.saarimzaman.com/udacity-memory-
 ## Installation
 Clone the GitHub repository or download the project as a zip file. All the required libraries are delivered via CDNs so that there is no extra installation necessary. Just open up index.html, app.js, and app.css in your code editor and start writing code.
 
-## Issues, known bugs, and areas with room for Improvement
+## Issues, known bugs, and areas for improvement
 1. The project is not optimized for mobile. There will be overflow on mobile due to a lack of responsiveness.
 2. The `newGame()` function and the `restart` feature are written in JQuery. Switching to vanilla js would reduce the number of dependencies and size of the project, thereby improving performance.
 3. There could be additional CSS animations implemented to signify that cards do not match.
